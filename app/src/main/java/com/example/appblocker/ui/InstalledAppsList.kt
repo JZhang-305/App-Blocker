@@ -24,26 +24,28 @@ fun InstalledAppsList(context: Context, modifier: Modifier = Modifier) {
 
     //val checkedApps = remember { mutableStateMapOf<ApplicationInfo>() }
 
-    Column(modifier = modifier.padding(16.dp)) {
-        TopAppBar {
-            Button(
-                //modifier = modifier.align(Alignment.CenterHorizontally),
-                onClick = {
-                    // Save the list of checked apps
+    Scaffold(
+        bottomBar = {
+            BottomAppBar {
+                Button(
+                    //modifier = modifier.align(Alignment.CenterHorizontally),
+                    onClick = {
+                        // Save the list of checked apps
 
-                    val sharedPreferences = context.getSharedPreferences("app_blocker", Context.MODE_PRIVATE)
-                    val editor = sharedPreferences.edit()
-                    val packageNames = checkedApps.map { it.packageName }
-                    editor.putStringSet("checked_apps", packageNames.toSet())
-                    editor.apply()
-                }) {
-                Text("Save")
-                for (i in checkedApps) {
-                    Text(i.loadLabel(packageManager).toString())
+                        val sharedPreferences = context.getSharedPreferences("app_blocker", Context.MODE_PRIVATE)
+                        val editor = sharedPreferences.edit()
+                        val packageNames = checkedApps.map { it.packageName }
+                        editor.putStringSet("checked_apps", packageNames.toSet())
+                        editor.apply()
+                    }) {
+                    Text("Save")
+                    for (i in checkedApps) {
+                        Text(i.loadLabel(packageManager).toString())
+                    }
                 }
             }
-
         }
+    ) {
         LazyColumn {
             items(installedApps) { app ->
                 if (app.flags and ApplicationInfo.FLAG_SYSTEM == 0) {
@@ -51,9 +53,8 @@ fun InstalledAppsList(context: Context, modifier: Modifier = Modifier) {
                 }
             }
         }
-
-
     }
+
 }
 
 
