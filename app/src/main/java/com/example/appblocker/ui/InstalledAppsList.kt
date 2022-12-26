@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.sp
 fun InstalledAppsList(context: Context, modifier: Modifier = Modifier) {
     val packageManager = context.packageManager
     val installedApps = packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
-    
+
     val checkedApps = remember { mutableStateListOf<ApplicationInfo>() }
 
     LazyColumn(modifier = Modifier.padding(16.dp)) {
