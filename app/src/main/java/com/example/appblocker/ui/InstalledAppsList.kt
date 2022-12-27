@@ -17,9 +17,15 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun InstalledAppsList(context: Context, modifier: Modifier = Modifier) {
-    var playlistName: String by remember { mutableStateOf("Name of Playlist")}
     val packageManager = context.packageManager
+    val database = context.getSharedPreferences("app_playlists", Context.MODE_PRIVATE)
+    // current set playlist name in TextField
+    var playlistName: String by remember { mutableStateOf("Name of Playlist") }
+    // currently checked apps
+    val checkedApps = remember { mutableStateListOf<String>() }
+
     val listOfApps = packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
+
     // For speeding up process of displaying all apps
     val appsByName = mutableMapOf<String, ApplicationInfo>()
     for (app in listOfApps) {
@@ -32,10 +38,8 @@ fun InstalledAppsList(context: Context, modifier: Modifier = Modifier) {
         appNames.add(appName)
     }
     appNames.sort()
-    val checkedApps = remember { mutableStateListOf<String>() }
 
-    //val checkedApps = remember { mutableStateMapOf<ApplicationInfo>() }
-
+    // Scaffold, bottomBar, and BottomAppBar need to be coupled to create a persistent bottom bar
     Scaffold(
         bottomBar = {
             BottomAppBar {
@@ -44,53 +48,52 @@ fun InstalledAppsList(context: Context, modifier: Modifier = Modifier) {
                     onValueChange = {
                         playlistName = it
                     },
-                    singleLine=true,
+                    singleLine = true,
                 )
+
                 Spacer(modifier = Modifier.width(16.dp))
 
+                // When clicked, button should save a new playlist and navigate back to screen displaying all playlists
                 Button(
                     onClick = {
-                        // Save the list of checked apps
-
-                        /*
-                        val sharedPreferences = context.getSharedPreferences("app_blocker", Context.MODE_PRIVATE)
-                        val editor = sharedPreferences.edit()
-                        val packageNames = checkedApps.map { it.packageName }
-                        editor.putStringSet("checked_apps", packageNames.toSet())
-                        editor.apply()*/
+                        // code to add key-value pair to database <playlistName, apps in said playlist>
+                        with(database.edit()) {
+                            putStringSet(playlistName, checkedApps.toMutableSet())
+                            apply()
+                        }
 
                     }) {
-                    Text("+")
-                    /*for (app in checkedApps) {
-                        //Text(i.loadLabel(packageManager).toString())
-                        Text(app)
-                    }*/
-
+                    Text("Save")
                 }
             }
 
         }
     ) {
 
+        // TEST CODE FOR DISPLAYING DATABASE, DO NOT KEEP
+        //Text(database.getAll().toString())
+
         LazyColumn {
             items(appNames) { app ->
-                InstalledAppRow(app, packageManager, checkedApps)
+                InstalledAppRow(app, checkedApps)
             }
         }
     }
-
 }
 
 
 @Composable
-fun InstalledAppRow(appName: String,
-                    packageManager: PackageManager,
-                    checkedApps: MutableList<String>) {
-    // val appIcon = app.loadIcon(packageManager)
-    //val appName = app.loadLabel(packageManager).toString()
-    Row (verticalAlignment = Alignment.CenterVertically) {
+fun InstalledAppRow(
+    appName: String,
+    checkedApps: MutableList<String>
+) {
+
+    Row(verticalAlignment = Alignment.CenterVertically) {
         Checkbox(
+            // if app is not in checkedApps, the box is not checked
             checked = checkedApps.contains(appName),
+            // if the box just got checked, add the app to checkedApps,
+            // which will in turn cause checked parameter to be true
             onCheckedChange = { newlyChecked ->
                 if (newlyChecked) {
                     checkedApps.add(appName)
