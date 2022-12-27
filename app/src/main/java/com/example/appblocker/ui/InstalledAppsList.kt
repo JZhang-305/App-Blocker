@@ -17,24 +17,20 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun InstalledAppsList(context: Context, modifier: Modifier = Modifier) {
-
-
-
-
     val packageManager = context.packageManager
     val listOfApps = packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
     // For speeding up process of displaying all apps
-    val installedApps = mutableMapOf<String, ApplicationInfo>()
+    val appsByName = mutableMapOf<String, ApplicationInfo>()
     for (app in listOfApps) {
         if (app.flags and ApplicationInfo.FLAG_SYSTEM == 0) {
-            installedApps[app.loadLabel(packageManager).toString()] = app
+            appsByName[app.loadLabel(packageManager).toString()] = app
         }
     }
-    val listOfAppNames = mutableListOf<String>()
-    for ((key, value) in installedApps) {
-        listOfAppNames.add(key)
+    val appNames = mutableListOf<String>()
+    for ((appName, _) in appsByName) {
+        appNames.add(appName)
     }
-
+    appNames.sort()
     val checkedApps = remember { mutableStateListOf<String>() }
 
     //val checkedApps = remember { mutableStateMapOf<ApplicationInfo>() }
@@ -42,6 +38,13 @@ fun InstalledAppsList(context: Context, modifier: Modifier = Modifier) {
     Scaffold(
         bottomBar = {
             BottomAppBar {
+                TextField(
+                    value = "Name of Preset",
+                    onValueChange = {
+
+                    }
+                )
+
                 Button(
                     onClick = {
                         // Save the list of checked apps
@@ -65,9 +68,8 @@ fun InstalledAppsList(context: Context, modifier: Modifier = Modifier) {
     ) {
 
         LazyColumn {
-            items(listOfAppNames) { app ->
+            items(appNames) { app ->
                 InstalledAppRow(app, packageManager, checkedApps)
-
             }
         }
     }
