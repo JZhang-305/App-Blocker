@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun InstalledAppsList(context: Context, modifier: Modifier = Modifier) {
+    var playlistName: String by remember { mutableStateOf("Name of Playlist")}
     val packageManager = context.packageManager
     val listOfApps = packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
     // For speeding up process of displaying all apps
@@ -39,11 +40,13 @@ fun InstalledAppsList(context: Context, modifier: Modifier = Modifier) {
         bottomBar = {
             BottomAppBar {
                 TextField(
-                    value = "Name of Preset",
+                    value = playlistName,
                     onValueChange = {
-
-                    }
+                        playlistName = it
+                    },
+                    singleLine=true,
                 )
+                Spacer(modifier = Modifier.width(16.dp))
 
                 Button(
                     onClick = {
@@ -58,12 +61,14 @@ fun InstalledAppsList(context: Context, modifier: Modifier = Modifier) {
 
                     }) {
                     Text("+")
-                    for (app in checkedApps) {
+                    /*for (app in checkedApps) {
                         //Text(i.loadLabel(packageManager).toString())
                         Text(app)
-                    }
+                    }*/
+
                 }
             }
+
         }
     ) {
 
