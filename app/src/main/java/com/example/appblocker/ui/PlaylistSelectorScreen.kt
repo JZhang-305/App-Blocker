@@ -13,10 +13,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 
 
 @Composable
-fun PlaylistSelectorScreen(context: Context, modifier: Modifier = Modifier) {
+fun PlaylistSelectorScreen(context: Context, navController: NavHostController, modifier: Modifier = Modifier) {
     val packageManager = context.packageManager
     val database = context.getSharedPreferences("app_playlists", Context.MODE_PRIVATE)
     // current set playlist name in TextField
@@ -56,13 +57,16 @@ fun PlaylistSelectorScreen(context: Context, modifier: Modifier = Modifier) {
                 // When clicked, button should save a new playlist and navigate back to screen displaying all playlists
                 Button(
                     onClick = {
+
+
                         // code to add key-value pair to database <playlistName, apps in said playlist>
                         with(database.edit()) {
                             putStringSet(playlistName, checkedApps.toMutableSet())
                             apply()
                         }
-
-                    }) {
+                        navController.navigate("PlaylistScreen")
+                    }
+                ) {
                     Text("Save")
                 }
             }
