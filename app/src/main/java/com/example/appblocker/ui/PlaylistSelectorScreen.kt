@@ -50,6 +50,7 @@ fun PlaylistSelectorScreen(context: Context, navController: NavHostController, m
                         playlistName = it
                     },
                     singleLine = true,
+                    modifier = Modifier.widthIn(0.dp, 250.dp)
                 )
 
                 Spacer(modifier = Modifier.width(16.dp))
