@@ -56,7 +56,7 @@ fun PlaylistSelectorScreen(
                         playlistName = it
                     },
                     singleLine = true,
-                    modifier = Modifier.widthIn(0.dp, 250.dp)
+                    modifier = Modifier.widthIn(0.dp, 350.dp)
                 )
 
                 Spacer(modifier = Modifier.width(16.dp))

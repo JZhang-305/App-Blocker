@@ -2,7 +2,9 @@ package com.example.appblocker.ui
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
@@ -21,7 +23,7 @@ import java.util.*
 
 @Composable
 fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = modifier.fillMaxSize()) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
         Spacer(modifier = Modifier.height(50.dp))
         Text(
             text = "App Blocker",
@@ -30,6 +32,7 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
             //modifier = modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(100.dp))
+
         Row(verticalAlignment = Alignment.CenterVertically) {
             Button(
                 onClick = { navController.navigate("ScheduleScreen") },
