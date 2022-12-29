@@ -17,9 +17,14 @@ import com.example.appblocker.ui.ScheduleScreen
 fun Navigation(context: Context, modifier: Modifier = Modifier) {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = "HomeScreen") {
-        composable("HomeScreen") {HomeScreen (navController = navController)}
-        composable("PlaylistScreen") {PlaylistScreen (context, navController = navController)}
-        composable("PlaylistSelectorScreen") {PlaylistSelectorScreen (context, navController = navController)}
-        composable("ScheduleScreen") {ScheduleScreen (navController = navController)}
+        composable("HomeScreen") { HomeScreen(navController = navController) }
+        composable("PlaylistScreen") { PlaylistScreen(context, navController = navController) }
+        composable("PlaylistSelectorScreen") {
+            PlaylistSelectorScreen(
+                context,
+                navController = navController
+            )
+        }
+        composable("ScheduleScreen") { ScheduleScreen(navController = navController) }
     }
 }

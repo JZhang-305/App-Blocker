@@ -23,11 +23,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-/*
-@Preview
-@Composable
-fun ScheduleAppScreen() {
-    ScheduleScreen(modifier = Modifier
-
-    )
-}*/

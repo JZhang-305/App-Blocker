@@ -16,10 +16,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import java.time.LocalDate
+import java.util.*
 
 @Composable
 fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) {
-    Column (horizontalAlignment = Alignment.CenterHorizontally, modifier = modifier.fillMaxSize()) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = modifier.fillMaxSize()) {
         Spacer(modifier = Modifier.height(50.dp))
         Text(
             text = "App Blocker",
@@ -28,12 +30,14 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
             //modifier = modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(100.dp))
-        Row (verticalAlignment = Alignment.CenterVertically) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
             Button(
                 onClick = { navController.navigate("ScheduleScreen") },
                 shape = RoundedCornerShape(20.dp),
-                modifier = Modifier.height(60.dp).width(350.dp)
-                ,elevation =  ButtonDefaults.elevation(
+                modifier = Modifier
+                    .height(60.dp)
+                    .width(350.dp),
+                elevation = ButtonDefaults.elevation(
                     defaultElevation = 10.dp,
                     pressedElevation = 15.dp,
                     disabledElevation = 0.dp
@@ -48,12 +52,14 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
             }
         }
         Spacer(modifier = Modifier.height(30.dp))
-        Row (verticalAlignment = Alignment.CenterVertically) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
             Button(
                 onClick = { navController.navigate("PlaylistScreen") },
                 shape = RoundedCornerShape(20.dp),
-                modifier = Modifier.height(60.dp).width(350.dp),
-                elevation =  ButtonDefaults.elevation(
+                modifier = Modifier
+                    .height(60.dp)
+                    .width(350.dp),
+                elevation = ButtonDefaults.elevation(
                     defaultElevation = 10.dp,
                     pressedElevation = 15.dp,
                     disabledElevation = 0.dp
@@ -68,12 +74,14 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
             }
         }
         Spacer(modifier = Modifier.height(30.dp))
-        Row (verticalAlignment = Alignment.CenterVertically) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
             Button(
                 onClick = {},
                 shape = RoundedCornerShape(20.dp),
-                modifier = Modifier.height(60.dp).width(350.dp),
-                elevation =  ButtonDefaults.elevation(
+                modifier = Modifier
+                    .height(60.dp)
+                    .width(350.dp),
+                elevation = ButtonDefaults.elevation(
                     defaultElevation = 10.dp,
                     pressedElevation = 15.dp,
                     disabledElevation = 0.dp

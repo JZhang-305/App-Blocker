@@ -9,6 +9,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 
+
 @Composable
 fun ScheduleScreen(modifier: Modifier = Modifier, navController: NavHostController? = null) {
     Column {

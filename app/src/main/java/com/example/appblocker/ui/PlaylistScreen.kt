@@ -26,12 +26,15 @@ import androidx.navigation.NavHostController
 import com.example.appblocker.R
 
 @Composable
-fun PlaylistScreen(context: Context, navController: NavHostController, modifier: Modifier = Modifier) {
+fun PlaylistScreen(
+    context: Context,
+    navController: NavHostController,
+    modifier: Modifier = Modifier
+) {
     val database = context.getSharedPreferences("app_playlists", Context.MODE_PRIVATE)
     val originalPlaylistNames = database.getAll().keys.toTypedArray()
     originalPlaylistNames.sort()
-    val playlistNames = remember {mutableStateListOf<String>(*originalPlaylistNames)}
-    //for (name in ) {playlistNames.add(name)}
+    val playlistNames = remember { mutableStateListOf<String>(*originalPlaylistNames) }
     // Scaffold, bottomBar, and BottomAppBar need to be coupled to create a persistent bottom bar
     Scaffold(
         bottomBar = {
@@ -50,10 +53,14 @@ fun PlaylistScreen(context: Context, navController: NavHostController, modifier:
     ) {
         Column {
             Spacer(modifier = modifier.height(15.dp))
-            Text("App Playlists", fontSize = 50.sp, fontWeight = FontWeight.Bold, modifier = modifier.align(Alignment.CenterHorizontally))
+            Text(
+                "App Playlists",
+                fontSize = 42.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = modifier.align(Alignment.CenterHorizontally)
+            )
             Spacer(modifier = modifier.height(15.dp))
             Divider(color = Color.Gray)
-            //val playlistNames = database.getAll().keys.toList()
             var counter: Int = 0
             LazyColumn {
                 items(playlistNames) { playlist ->
@@ -78,16 +85,30 @@ fun PlaylistScreen(context: Context, navController: NavHostController, modifier:
 }
 
 @Composable
-fun PlaylistRow(playlist: String, database: SharedPreferences, counter: Int, numOfPlaylists: Int, onPlaylistRemoved: () -> Unit, modifier: Modifier = Modifier) {
+fun PlaylistRow(
+    playlist: String,
+    database: SharedPreferences,
+    counter: Int,
+    numOfPlaylists: Int,
+    onPlaylistRemoved: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     var expanded by remember { mutableStateOf(false) }
     Column(modifier = modifier.fillMaxWidth()) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(playlist, fontSize = 30.sp, fontWeight = FontWeight.Bold, modifier = modifier.padding(top = 7.dp, start = 7.dp).clickable { expanded = true })
+            Text(
+                playlist,
+                fontSize = 30.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = modifier
+                    .padding(top = 7.dp, start = 7.dp)
+                    .clickable { expanded = true })
             DropdownMenu(
                 expanded = expanded,
                 onDismissRequest = { expanded = false }
             ) {
-                for (appInPlaylist in database.getStringSet(playlist, mutableSetOf())?.toList()?.sorted()!!) {
+                for (appInPlaylist in database.getStringSet(playlist, mutableSetOf())?.toList()
+                    ?.sorted()!!) {
                     DropdownMenuItem(onClick = {}) {
                         Text(appInPlaylist)
                     }
@@ -99,28 +120,30 @@ fun PlaylistRow(playlist: String, database: SharedPreferences, counter: Int, num
         Image(
             painter = painterResource(R.drawable.trash_can),
             contentDescription = "Cart button icon",
-            modifier = modifier.padding(all = 7.dp).align(Alignment.End).clickable {
-                with(database.edit()) {
-                    remove(playlist)
-                    apply()
+            modifier = modifier
+                .padding(all = 7.dp)
+                .align(Alignment.End)
+                .clickable {
+                    with(database.edit()) {
+                        remove(playlist)
+                        apply()
+                    }
+                    onPlaylistRemoved()
                 }
-                onPlaylistRemoved()
-            }
         )
 
         //Row(verticalAlignment = Alignment.CenterVertically) {
         //Row() {
-                //Button(onClick = { expanded = true }) { Text("Apps") }
+        //Button(onClick = { expanded = true }) { Text("Apps") }
 
 
-                //Spacer(modifier = Modifier.width(100.dp))
+        //Spacer(modifier = Modifier.width(100.dp))
 
 
+    }
+    Divider(color = Color.Gray)
 
-            }
-            Divider(color = Color.Gray)
-
-   // }
+    // }
     if (counter == numOfPlaylists - 1) {
         Spacer(modifier = Modifier.height(100.dp))
     }

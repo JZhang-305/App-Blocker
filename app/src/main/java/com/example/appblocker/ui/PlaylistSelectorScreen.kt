@@ -17,7 +17,11 @@ import androidx.navigation.NavHostController
 
 
 @Composable
-fun PlaylistSelectorScreen(context: Context, navController: NavHostController, modifier: Modifier = Modifier) {
+fun PlaylistSelectorScreen(
+    context: Context,
+    navController: NavHostController,
+    modifier: Modifier = Modifier
+) {
     val packageManager = context.packageManager
     val database = context.getSharedPreferences("app_playlists", Context.MODE_PRIVATE)
     // current set playlist name in TextField
