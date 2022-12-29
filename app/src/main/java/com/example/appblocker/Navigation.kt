@@ -25,6 +25,6 @@ fun Navigation(context: Context, modifier: Modifier = Modifier) {
                 navController = navController
             )
         }
-        composable("ScheduleScreen") { ScheduleScreen(navController = navController) }
+        composable("ScheduleScreen") { ScheduleScreen(context, navController = navController) }
     }
 }

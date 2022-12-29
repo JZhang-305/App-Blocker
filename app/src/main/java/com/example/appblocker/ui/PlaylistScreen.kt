@@ -99,7 +99,7 @@ fun PlaylistRow(
             Text(
                 playlist,
                 fontSize = 30.sp,
-                fontWeight = FontWeight.Bold,
+                //fontWeight = FontWeight.Bold,
                 modifier = modifier
                     .padding(top = 7.dp, start = 7.dp)
                     .clickable { expanded = true })
