@@ -55,9 +55,11 @@ fun ScheduleScreen(context: Context, modifier: Modifier = Modifier, navControlle
         }
         saveDaysToPreferences(context, weekData)
     }
-    val playlistNames = getPlaylistNames(context).toList()
-    val weekData = remember { loadDaysFromPreferences(context)?.let { mutableStateListOf<DayOfTheWeek>(*it.toTypedArray()) } }
 
+
+    val playlistNames = getPlaylistNames(context).toList()
+    val switchStates = remember { mutableStateMapOf<String, Boolean>("Sunday" to false, "Monday" to false, "Tuesday" to false, "Wednesday" to false, "Thursday" to false, "Friday" to false, "Saturday" to false)}
+    val weekData = remember { loadDaysFromPreferences(context)?.let { mutableStateListOf<DayOfTheWeek>(*it.toTypedArray()) } }
     Column {
         Spacer(modifier = modifier.height(15.dp))
         Text(
@@ -69,14 +71,40 @@ fun ScheduleScreen(context: Context, modifier: Modifier = Modifier, navControlle
         Spacer(modifier = modifier.height(15.dp))
         Divider(color = Color.Gray)
         Spacer(modifier = modifier.height(10.dp))
-    LazyColumn () {
+    LazyColumn {
+        // for state hoisting switch
+
         if (weekData != null) {
             items(weekData.toList()) {day ->
-                // make each row curved
-                Row (verticalAlignment = Alignment.CenterVertically, modifier = modifier.padding(15.dp).height(80.dp).fillMaxWidth().border(
-                    BorderStroke(2.dp, Color.Red), shape = RoundedCornerShape(20.dp))
+                // make each row
+                //ScheduleRow(day = day, playlistNames = playlistNames)
+
+                // make every row curved
+                Row (verticalAlignment = Alignment.CenterVertically, modifier = modifier
+                    .padding(15.dp)
+                    .height(160.dp)
+                    .fillMaxWidth()
+                    .border(
+                        BorderStroke(2.dp, Color.Red), shape = RoundedCornerShape(20.dp)
+                    )
                 ) {
-                    Text(day.dayOfWeek.take(3), fontSize = 20.sp, fontWeight = FontWeight.SemiBold, modifier = modifier.padding(10.dp))
+                    Column {
+                        Text(day.dayOfWeek.take(3), fontSize = 30.sp, fontWeight = FontWeight.SemiBold, modifier = modifier.padding(10.dp))
+                        switchStates[day.dayOfWeek]?.let {
+                            Switch (
+                                modifier = modifier
+                                    .fillMaxWidth()
+                                    .wrapContentWidth(Alignment.Start),
+                                checked = it,
+                                onCheckedChange = {
+                                    switchStates[day.dayOfWeek] = !switchStates[day.dayOfWeek]!!
+                                    day.isSwitchedOn = !day.isSwitchedOn
+
+                                } ,
+                                colors = SwitchDefaults.colors(uncheckedThumbColor = Color.DarkGray)
+                            )
+                        }
+                    }
                     Spacer(modifier = modifier.width(15.dp))
                     //Divider(color = Color.Black, modifier = Modifier.fillMaxHeight().width(1.dp))
 
@@ -104,7 +132,7 @@ fun ScheduleScreen(context: Context, modifier: Modifier = Modifier, navControlle
                             value = selectedItem,
                             onValueChange = {},
                             readOnly = true,
-                            label = { Text(text = "Label") },
+                            label = { Text(text = "App Playlist") },
                             modifier = Modifier.widthIn(0.dp, 180.dp),
                             singleLine = true,
                             trailingIcon = {
@@ -132,23 +160,92 @@ fun ScheduleScreen(context: Context, modifier: Modifier = Modifier, navControlle
                             }
                         }
                     }
-/*
-                    TextField(
-                        value = selectedItem,
-                        onValueChange = {},
-                        readOnly = true,
-                        label = { Text(text = "Label") },
-                        trailingIcon = {
-                            ExposedDropdownMenuDefaults.TrailingIcon(
-                                expanded = expanded
-                            )
-                        },
-                        colors = ExposedDropdownMenuDefaults.textFieldColors()
-                    )*/
                 }
-
             }
         }
     }
 }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun ScheduleRow(day: DayOfTheWeek, playlistNames: List<String>, modifier: Modifier = Modifier) {
+    // make every row curved
+    Row (verticalAlignment = Alignment.CenterVertically, modifier = modifier
+        .padding(15.dp)
+        .height(160.dp)
+        .fillMaxWidth()
+        .border(
+            BorderStroke(2.dp, Color.Red), shape = RoundedCornerShape(20.dp)
+        )
+    ) {
+        Column {
+            Text(day.dayOfWeek.take(3), fontSize = 30.sp, fontWeight = FontWeight.SemiBold, modifier = modifier.padding(10.dp))
+            Switch (
+                modifier = modifier
+                    .fillMaxWidth()
+                    .wrapContentWidth(Alignment.Start),
+                checked = day.isSwitchedOn,
+                onCheckedChange = {
+                    day.isSwitchedOn = !day.isSwitchedOn
+                                  } ,
+                colors = SwitchDefaults.colors(uncheckedThumbColor = Color.DarkGray)
+            )
+        }
+        Spacer(modifier = modifier.width(15.dp))
+        //Divider(color = Color.Black, modifier = Modifier.fillMaxHeight().width(1.dp))
+
+
+        // CODE FOR APP PLAYLIST DROPDOWN
+        val contextForToast = LocalContext.current.applicationContext
+        var firstPlaylistName = ""
+        if (playlistNames.isNotEmpty()) {
+            firstPlaylistName = playlistNames[0]
+        }
+
+        var selectedItem by remember {mutableStateOf(firstPlaylistName)}
+        var expanded by remember {
+            mutableStateOf(false)
+        }
+        ExposedDropdownMenuBox(
+            expanded = expanded,
+            onExpandedChange = {
+                expanded = !expanded
+            }
+        ) {
+
+            // text field
+            TextField(
+                value = selectedItem,
+                onValueChange = {},
+                readOnly = true,
+                label = { Text(text = "App Playlist") },
+                modifier = Modifier.widthIn(0.dp, 180.dp),
+                singleLine = true,
+                trailingIcon = {
+                    ExposedDropdownMenuDefaults.TrailingIcon(
+                        expanded = expanded
+                    )
+                },
+                colors = ExposedDropdownMenuDefaults.textFieldColors()
+            )
+
+            // menu
+            ExposedDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false }
+            ) {
+                playlistNames.forEach { selectedOption ->
+                    // menu item
+                    DropdownMenuItem(onClick = {
+                        selectedItem = selectedOption
+                        //Toast.makeText(contextForToast, selectedOption, Toast.LENGTH_SHORT).show()
+                        expanded = false
+                    }) {
+                        Text(text = selectedOption)
+                    }
+                }
+            }
+        }
+    }
 }
