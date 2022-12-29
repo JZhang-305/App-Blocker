@@ -75,6 +75,7 @@ fun ScheduleScreen(context: Context, modifier: Modifier = Modifier, navControlle
         // for state hoisting switch
 
         if (weekData != null) {
+
             items(weekData.toList()) {day ->
                 // make each row
                 //ScheduleRow(day = day, playlistNames = playlistNames)
@@ -88,18 +89,22 @@ fun ScheduleScreen(context: Context, modifier: Modifier = Modifier, navControlle
                         BorderStroke(2.dp, Color.Red), shape = RoundedCornerShape(20.dp)
                     )
                 ) {
-                    Column {
-                        Text(day.dayOfWeek.take(3), fontSize = 30.sp, fontWeight = FontWeight.SemiBold, modifier = modifier.padding(10.dp))
+                    Column (modifier = modifier.widthIn(0.dp, 100.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                        //Text(day.dayOfWeek.take(3), fontSize = 30.sp, fontWeight = FontWeight.SemiBold, modifier = modifier.padding(10.dp))
+
+                        //checking value of day.isSwitchedOn
+                        Text(day.playlistName.take(10), fontSize = 10.sp, fontWeight = FontWeight.SemiBold, modifier = modifier.padding(10.dp))
+
                         switchStates[day.dayOfWeek]?.let {
                             Switch (
                                 modifier = modifier
                                     .fillMaxWidth()
-                                    .wrapContentWidth(Alignment.Start),
-                                checked = it,
+                                    .wrapContentWidth(Alignment.CenterHorizontally),
+                                checked = day.isSwitchedOn,
                                 onCheckedChange = {
                                     switchStates[day.dayOfWeek] = !switchStates[day.dayOfWeek]!!
                                     day.isSwitchedOn = !day.isSwitchedOn
-
+                                    saveDaysToPreferences(context, weekData)
                                 } ,
                                 colors = SwitchDefaults.colors(uncheckedThumbColor = Color.DarkGray)
                             )
@@ -112,8 +117,11 @@ fun ScheduleScreen(context: Context, modifier: Modifier = Modifier, navControlle
                     // CODE FOR APP PLAYLIST DROPDOWN
                     val contextForToast = LocalContext.current.applicationContext
                     var firstPlaylistName = ""
-                    if (playlistNames.isNotEmpty()) {
+                    if (playlistNames.isNotEmpty() && day.playlistName == "") {
                         firstPlaylistName = playlistNames[0]
+                    }
+                    else {
+                        firstPlaylistName = day.playlistName
                     }
 
                     var selectedItem by remember {mutableStateOf(firstPlaylistName)}
@@ -130,7 +138,11 @@ fun ScheduleScreen(context: Context, modifier: Modifier = Modifier, navControlle
                         // text field
                         TextField(
                             value = selectedItem,
-                            onValueChange = {},
+                            onValueChange = {
+                                selectedItem = it
+                                day.playlistName = selectedItem
+                                saveDaysToPreferences(context, weekData)
+                            },
                             readOnly = true,
                             label = { Text(text = "App Playlist") },
                             modifier = Modifier.widthIn(0.dp, 180.dp),
