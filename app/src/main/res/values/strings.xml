@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">AppBlocker</string>
-    <string name="name_of_playlist">Name Of Playlist</string>
+    <string name="name_of_blocklist">Name Of Blocklist</string>
 
 </resources>

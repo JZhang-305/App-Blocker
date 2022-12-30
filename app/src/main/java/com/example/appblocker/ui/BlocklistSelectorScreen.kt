@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -20,15 +21,15 @@ import androidx.navigation.NavHostController
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun PlaylistSelectorScreen(
+fun BlocklistSelectorScreen(
     context: Context,
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
     val packageManager = context.packageManager
-    val database = context.getSharedPreferences("app_playlists", Context.MODE_PRIVATE)
-    // current set playlist name in TextField
-    var playlistName: String by remember { mutableStateOf("") }
+    val database = context.getSharedPreferences("app_blocklists", Context.MODE_PRIVATE)
+    // current set blocklist name in TextField
+    var blocklistName: String by remember { mutableStateOf("") }
     // currently checked apps
     val checkedApps = remember { mutableStateListOf<String>() }
 
@@ -52,29 +53,41 @@ fun PlaylistSelectorScreen(
         bottomBar = {
             BottomAppBar {
                 TextField(
-                    value = playlistName,
+                    value = blocklistName,
                     onValueChange = {
-                        playlistName = it
+                        blocklistName = it
                     },
-                    label = { Text(text = "Name of Playlist", color = Color.White) },
+                    label = { Text(text = "Name of Blocklist", color = Color.White) },
                     singleLine = true,
                     modifier = Modifier.widthIn(0.dp, 350.dp)
                 )
 
                 Spacer(modifier = Modifier.width(16.dp))
 
-                // When clicked, button should save a new playlist and navigate back to screen displaying all playlists
+                // When clicked, button should save a new blocklist and navigate back to screen displaying all blocklists
                 Button(
                     onClick = {
+                        if (blocklistName.isEmpty()) {
+                            Toast.makeText(
+                                context,
+                                "Must name blocklist before saving",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        } else if (checkedApps.isEmpty()) {
+                            Toast.makeText(
+                                context,
+                                "Must add app(s) to blocklist before saving",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        } else {
+                            // code to add key-value pair to database <blocklistName, apps in said blocklist>
+                            with(database.edit()) {
+                                putStringSet(blocklistName, checkedApps.toMutableSet())
+                                apply()
+                            }
+                            navController.navigate("BlocklistScreen")
 
-
-                        // code to add key-value pair to database <playlistName, apps in said playlist>
-                        with(database.edit()) {
-                            putStringSet(playlistName, checkedApps.toMutableSet())
-                            apply()
                         }
-                        navController.navigate("PlaylistScreen")
-
                     }
                 ) {
                     Text("Save")

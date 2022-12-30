@@ -8,8 +8,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.appblocker.ui.PlaylistScreen
-import com.example.appblocker.ui.PlaylistSelectorScreen
+import com.example.appblocker.ui.BlocklistScreen
+import com.example.appblocker.ui.BlocklistSelectorScreen
 import com.example.appblocker.ui.HomeScreen
 import com.example.appblocker.ui.ScheduleScreen
 
@@ -18,9 +18,9 @@ fun Navigation(context: Context, modifier: Modifier = Modifier) {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = "HomeScreen") {
         composable("HomeScreen") { HomeScreen(navController = navController, context = context) }
-        composable("PlaylistScreen") { PlaylistScreen(context, navController = navController) }
-        composable("PlaylistSelectorScreen") {
-            PlaylistSelectorScreen(
+        composable("BlocklistScreen") { BlocklistScreen(context, navController = navController) }
+        composable("BlocklistSelectorScreen") {
+            BlocklistSelectorScreen(
                 context,
                 navController = navController
             )

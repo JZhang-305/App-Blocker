@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/new8d/AndroidStudioProjects/AppBlocker/app/src/main/res/drawable/gray_trash_can.xml" value="0.2195" />
+        <entry key="..\:/Users/new8d/AndroidStudioProjects/AppBlocker/app/src/main/res/drawable/grey_trash_can.xml" value="0.2195" />
+        <entry key="..\:/Users/new8d/AndroidStudioProjects/AppBlocker/app/src/main/res/drawable/ic_baseline_delete_24.xml" value="0.2195" />
+      </map>
+    </option>
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>

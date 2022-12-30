@@ -15,21 +15,24 @@ class DayOfTheWeek(val dayOfWeek: String) {
     //var sleepTimeHour = 0
     var sleepTime = "00:00"
     var wakeTime = "00:01"
-    var playlistName = ""
-    var appsInPlaylist = listOf<String>()
+    var blocklistName = ""
+    var appsInBlocklist = listOf<String>()
     var isToday = (dayOfWeek == currentDay())
     var isSwitchedOn = false
     var currentlyBlocking = false
 
     fun updateIsCurrentlyBlocking() {
         updateIsToday()
-
         val current = LocalDateTime.now()
         val formatter = DateTimeFormatter.ofPattern("HH:mm")
         val formatted = current.format(formatter)
 
-        currentlyBlocking = (isSwitchedOn && isToday && isInBetween(sleepTime, wakeTime, formatted) && sleepTime != wakeTime)
-        }
+        currentlyBlocking = (isSwitchedOn && isToday && isInBetween(
+            sleepTime,
+            wakeTime,
+            formatted
+        ) && sleepTime != wakeTime)
+    }
 
     private fun currentDay(): String {
         val calendar = Calendar.getInstance();

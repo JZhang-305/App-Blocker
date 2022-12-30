@@ -1,6 +1,6 @@
 package com.example.appblocker
 
-import com.example.appblocker.ui.PlaylistSelectorScreen
+import com.example.appblocker.ui.BlocklistSelectorScreen
 import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity

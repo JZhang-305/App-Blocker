@@ -27,7 +27,12 @@ import java.util.*
 
 @Composable
 fun HomeScreen(navController: NavHostController, context: Context, modifier: Modifier = Modifier) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+    ) {
         Spacer(modifier = Modifier.height(50.dp))
         Text(
             text = "App Blocker",
@@ -61,7 +66,7 @@ fun HomeScreen(navController: NavHostController, context: Context, modifier: Mod
         Spacer(modifier = Modifier.height(30.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
             Button(
-                onClick = { navController.navigate("PlaylistScreen") },
+                onClick = { navController.navigate("BlocklistScreen") },
                 shape = RoundedCornerShape(20.dp),
                 modifier = Modifier
                     .height(60.dp)
@@ -73,7 +78,7 @@ fun HomeScreen(navController: NavHostController, context: Context, modifier: Mod
                 )
             ) {
                 Text(
-                    "App Playlists",
+                    "App Blocklists",
                     fontSize = 30.sp,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.align(Alignment.CenterVertically)
@@ -82,35 +87,41 @@ fun HomeScreen(navController: NavHostController, context: Context, modifier: Mod
         }
         Spacer(modifier = Modifier.height(30.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Button(
-                onClick = {},
-                shape = RoundedCornerShape(20.dp),
-                modifier = Modifier
-                    .height(60.dp)
-                    .width(350.dp),
-                elevation = ButtonDefaults.elevation(
-                    defaultElevation = 10.dp,
-                    pressedElevation = 15.dp,
-                    disabledElevation = 0.dp
-                )
-            ) {
-                Text(
-                    "Unlock",
-                    fontSize = 30.sp,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.align(Alignment.CenterVertically)
-                )
+            isBlocking(context)?.let {
+                Button(
+                    onClick = {},
+                    shape = RoundedCornerShape(20.dp),
+                    modifier = Modifier
+                        .height(60.dp)
+                        .width(350.dp),
+                    elevation = ButtonDefaults.elevation(
+                        defaultElevation = 10.dp,
+                        pressedElevation = 15.dp,
+                        disabledElevation = 0.dp
+                    ),
+                    enabled = it
+                ) {
+                    Text(
+                        "Unlock",
+                        fontSize = 30.sp,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.align(Alignment.CenterVertically)
+                    )
+                }
             }
         }
         Spacer(modifier = Modifier.height(60.dp))
         Row(horizontalArrangement = Arrangement.Center) {
-            Text(text = "Current State: ", color = Color.Black, fontSize = 30.sp)
+            Text(text = "Status: ", color = Color.Black, fontSize = 28.sp)
 
-            if (isBlocking(context) == true) { Text(text = "Active", color = Color.Green) }
-            else { Text(text = "Inactive", color = Color.Red) }
+            if (isBlocking(context) == true) {
+                Text(text = "Active", color = Color.Green, fontSize = 28.sp)
+            } else {
+                Text(text = "Inactive", color = Color.Red, fontSize = 28.sp)
+            }
         }
 
-        //Button(onClick = {navController.navigate("PlaylistScreen")}) { Text("App Playlist") }
+        //Button(onClick = {navController.navigate("BlocklistScreen")}) { Text("App Blocklist") }
         //Button(onClick = {}) { Text("Unlock") }
     }
 }
@@ -130,24 +141,7 @@ fun isBlocking(context: Context): Boolean? {
     if (loadDays(context) != null) {
         days?.get(dayNum)?.updateIsCurrentlyBlocking()
         return days?.get(dayNum)?.currentlyBlocking
+    } else {
+        return false
     }
-    else {return false}
 }
-
-/*
-fun currentDay(): String {
-    val calendar = Calendar.getInstance();
-    return when (calendar.get(Calendar.DAY_OF_WEEK)) {
-        1 -> "Sunday"
-        2 -> "Monday"
-        3 -> "Tuesday"
-        4 -> "Wednesday"
-        5 -> "Thursday"
-        6 -> "Friday"
-        7 -> "Saturday"
-
-        else -> {
-            "Error"
-        }
-    }
-}*/
