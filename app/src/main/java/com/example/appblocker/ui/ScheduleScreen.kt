@@ -1,34 +1,37 @@
 package com.example.appblocker.ui
+//package com.geeksforgeeks.jctimepicker
 
 import android.annotation.SuppressLint
+import android.app.TimePickerDialog
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
-import com.example.appblocker.backend.DayOfTheWeek
-import java.util.*
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import com.example.appblocker.R
+import com.example.appblocker.backend.DayOfTheWeek
 import com.example.appblocker.backend.getPlaylistNames
-import android.app.TimePickerDialog
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import java.util.*
 
 fun loadDaysFromPreferences(context: Context): List<DayOfTheWeek>? {
     val sharedPreferences = context.getSharedPreferences("days_preferences", Context.MODE_PRIVATE)
@@ -49,7 +52,11 @@ fun saveDaysToPreferences(context: Context, days: List<DayOfTheWeek>) {
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ScheduleScreen(context: Context, modifier: Modifier = Modifier, navController: NavHostController? = null) {
+fun ScheduleScreen(
+    context: Context,
+    modifier: Modifier = Modifier,
+    navController: NavHostController? = null
+) {
     // if preferences have not been set yet (first time setup), force default options
     val listOfDayObjects = loadDaysFromPreferences(context)
     if (listOfDayObjects == null) {
@@ -61,7 +68,7 @@ fun ScheduleScreen(context: Context, modifier: Modifier = Modifier, navControlle
         }
         saveDaysToPreferences(context, weekData)
     }
-
+    val todayColor: Color = Color.Black
 
     val playlistNames = getPlaylistNames(context).toList()
     val switchStates = remember {
@@ -88,10 +95,11 @@ fun ScheduleScreen(context: Context, modifier: Modifier = Modifier, navControlle
                         Toast.makeText(context, "Preferences Saved", Toast.LENGTH_SHORT).show()
                     }
                 },
-                icon = {Icon(imageVector = Icons.Filled.Done, contentDescription = "Done")},
-                modifier = Modifier.padding(all = 16.dp))
+                icon = { Icon(imageVector = Icons.Filled.Done, contentDescription = "Done") },
+                modifier = Modifier.padding(all = 16.dp)
+            )
 
-            }
+        }
 
     ) {
         Column {
@@ -115,22 +123,52 @@ fun ScheduleScreen(context: Context, modifier: Modifier = Modifier, navControlle
                         //ScheduleRow(day = day, playlistNames = playlistNames)
 
                         // make every row curved
+                        var rowModifier = modifier
+                            .padding(5.dp)
+                            .height(120.dp)
+                            .fillMaxWidth()
+
+                        day.updateIsToday()
+                        if (day.isToday) {
+                            rowModifier = rowModifier.border(
+                                BorderStroke(4.dp, todayColor),
+                                shape = RoundedCornerShape(20.dp)
+                            )
+                        } else {
+                            rowModifier = rowModifier.border(
+                                BorderStroke(2.dp, Color.LightGray),
+                                shape = RoundedCornerShape(20.dp)
+                            )
+                        }
                         Row(
-                            verticalAlignment = Alignment.CenterVertically, modifier = modifier
-                                .padding(5.dp)
-                                .height(120.dp)
-                                .fillMaxWidth()
-                                .border(
-                                    BorderStroke(2.dp, Color.Red), shape = RoundedCornerShape(20.dp)
-                                )
+                            verticalAlignment = Alignment.CenterVertically, modifier = rowModifier
                         ) {
+                            // code to change color based on day
+                            val colModifier = modifier.widthIn(0.dp, 80.dp)
+//                            day.updateIsToday()
+//                            if (day.isToday) {
+//                                colModifier = colModifier.background(Color.Green)
+//                            }
+
                             Column(
-                                modifier = modifier.widthIn(0.dp, 80.dp),
+                                modifier = colModifier,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                Text(day.dayOfWeek.take(3), fontSize = 30.sp, fontWeight = FontWeight.SemiBold
+
+
+                                Text(
+                                    day.dayOfWeek.take(3),
+                                    fontSize = 30.sp,
+                                    fontWeight = FontWeight.SemiBold
                                     //, modifier = modifier.padding(5.dp)
                                 )
+                                /*
+                                Text(
+                                    day.sleepTime,
+                                    fontSize = 5.sp,
+                                    fontWeight = FontWeight.SemiBold
+                                    //, modifier = modifier.padding(5.dp)
+                                )*/
 
                                 switchStates[day.dayOfWeek]?.let {
                                     Switch(
@@ -143,16 +181,30 @@ fun ScheduleScreen(context: Context, modifier: Modifier = Modifier, navControlle
                                                 !switchStates[day.dayOfWeek]!!
                                             day.isSwitchedOn = !day.isSwitchedOn
                                         },
-                                        colors = SwitchDefaults.colors(uncheckedThumbColor = Color.DarkGray)
+                                        colors = SwitchDefaults.colors(
+                                            uncheckedThumbColor = Color.DarkGray,
+                                            checkedThumbColor = Color.Blue
+                                        )
                                     )
                                 }
                             }
-                            Spacer(modifier = modifier.width(10.dp))
-                            //Divider(color = Color.Black, modifier = Modifier.fillMaxHeight().width(1.dp))
 
+                            /*
+                            if (day.isToday) {
+                                Divider(color = todayColor, modifier = Modifier
+                                    .fillMaxHeight()
+                                    .width(4.dp))
+
+                            }
+                            else {
+                                Divider(color = Color.LightGray, modifier = Modifier
+                                    .fillMaxHeight()
+                                    .width(2.dp))
+                            }*/
+
+                            Spacer(modifier = modifier.width(11.dp))
 
                             // CODE FOR APP PLAYLIST DROPDOWN
-                            val contextForToast = LocalContext.current.applicationContext
                             var firstPlaylistName = ""
                             firstPlaylistName =
                                 if (playlistNames.isNotEmpty() && day.playlistName == "") {
@@ -181,7 +233,7 @@ fun ScheduleScreen(context: Context, modifier: Modifier = Modifier, navControlle
                                     },
                                     readOnly = true,
                                     label = { Text(text = "App Playlist") },
-                                    modifier = Modifier.widthIn(0.dp, 180.dp),
+                                    modifier = Modifier.widthIn(0.dp, 140.dp),
                                     singleLine = true,
                                     trailingIcon = {
                                         ExposedDropdownMenuDefaults.TrailingIcon(
@@ -210,23 +262,87 @@ fun ScheduleScreen(context: Context, modifier: Modifier = Modifier, navControlle
                                 }
                             }
 
-                        Column(modifier = modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                            // code for top row with moon icon and bed time
-                            Row() {
-                                Icon(imageVector = Icons.Filled.SingleBed, contentDescription = "Moon")
-
+                            Column(
+                                modifier = modifier.fillMaxWidth(),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                // code for top row with moon icon and bed time
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.single_bed),
+                                        contentDescription = "Bed"
+                                    )
+                                    //Text(":", fontWeight = FontWeight.Bold)
+                                    Spacer(modifier = modifier.width(4.dp))
+                                    TimePickerFunction(day, sleepTime = true)
+                                }
+                                //code for top row with sun icon and wake time
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.wb_sunny),
+                                        contentDescription = "Sun"
+                                    )
+                                    //Text(":", fontWeight = FontWeight.Bold)
+                                    Spacer(modifier = modifier.width(4.dp))
+                                    TimePickerFunction(day, sleepTime = false)
+                                }
                             }
-                            // code for top row with sun icon and wake time
-                            Row() {
-                                Icon(imageVector = Icons.Filled.WbSunny, contentDescription = "Sun")
-                            }
-                        }
 
                         }
                     }
                 }
             }
         }
+    }
+}
+
+// Creating a composable function
+// to create a Time Picker
+// Calling this function as content
+// in the above function
+@Composable
+fun TimePickerFunction(day: DayOfTheWeek, sleepTime: Boolean, modifier: Modifier = Modifier) {
+
+    // Fetching local context
+    val mContext = LocalContext.current
+
+    // Declaring and initializing a calendar
+    val mCalendar = Calendar.getInstance()
+    val mHour = mCalendar[Calendar.HOUR_OF_DAY]
+    val mMinute = mCalendar[Calendar.MINUTE]
+
+    // Value for storing time as a string
+    val mTime = remember { mutableStateOf("") }
+    if (sleepTime) {mTime.value = day.sleepTime }
+    else {mTime.value = day.wakeTime}
+
+
+    // Creating a TimePicker dialog
+        val mTimePickerDialog = TimePickerDialog(
+            mContext,
+            { _, mHour: Int, mMinute: Int ->
+                mTime.value =
+                    mHour.toString().padStart(2, '0') + ":" + mMinute.toString().padStart(2, '0')
+                if (sleepTime) {
+                    day.sleepTime = mTime.value
+                }
+                else {
+                    day.wakeTime = mTime.value
+                }
+            }, day.sleepTime.take(2).toInt(), day.sleepTime.takeLast(2).toInt(), false
+        )
+
+
+    Button(
+        onClick = {
+            mTimePickerDialog.show()
+
+        }, colors = ButtonDefaults.buttonColors(backgroundColor = Color.White), modifier = modifier
+            .padding(5.dp)
+            .height(40.dp)
+            .width(80.dp)
+    ) {
+        Text(text = mTime.value, color = Color.Black, fontSize = 15.sp)
     }
 }
 

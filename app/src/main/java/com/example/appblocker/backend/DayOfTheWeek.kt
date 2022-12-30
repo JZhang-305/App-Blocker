@@ -8,13 +8,16 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 class DayOfTheWeek(val dayOfWeek: String) {
-    var sleepTime = 0
-    var wakeTime = 0
+    //var sleepTimeHour = 0
+    var sleepTime = "10:00"
+    var wakeTime = "00:00"
     var playlistName = ""
     var appsInPlaylist = listOf<String>()
     var isToday = (dayOfWeek == currentDay())
     var isSwitchedOn = false
     var currentlyBlocking = false
+
+
 
     private fun currentDay(): String {
         val calendar = Calendar.getInstance();
