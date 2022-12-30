@@ -36,33 +36,20 @@ fun PlaylistScreen(
     val database = context.getSharedPreferences("app_playlists", Context.MODE_PRIVATE)
     val playlistNames = remember { mutableStateListOf<String>(*getPlaylistNames(context)) }
     val contextForToast = LocalContext.current.applicationContext
-    // Scaffold, bottomBar, and BottomAppBar need to be coupled to create a persistent bottom bar
+    // Scaffold and FAB need to be coupled to create a persistent button
     Scaffold(
-        bottomBar = {
-            BottomAppBar {
-                // When clicked, button should navigate to PlaylistSelectorScreen to make a new playlist
-                /*Button(
-                    onClick = {
-                        navController.navigate("PlaylistSelectorScreen")
-                    },
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Yellow)
-                ) {
-                    Text("New", color = Color.Black)
-                }*/
-                Box(modifier = Modifier.fillMaxSize()) {
-
-                    FloatingActionButton(
-                        modifier = Modifier
-                            .padding(all = 16.dp)
-                            .align(alignment = Alignment.BottomEnd),
-                        onClick = {
-                            navController.navigate("PlaylistSelectorScreen")
-                        }) {
-                        Icon(imageVector = Icons.Filled.Add, contentDescription = "Add")
-                    }
-                }
+        floatingActionButton = {
+            FloatingActionButton(
+                modifier = Modifier
+                    .padding(all = 16.dp),
+                    //.align(alignment = Alignment.BottomEnd),
+                onClick = {
+                    navController.navigate("PlaylistSelectorScreen")
+                }) {
+                Icon(imageVector = Icons.Filled.Add, contentDescription = "Add")
             }
         }
+
     ) {
         Column {
             Spacer(modifier = modifier.height(15.dp))
@@ -74,25 +61,21 @@ fun PlaylistScreen(
             )
             Spacer(modifier = modifier.height(15.dp))
             Divider(color = Color.Gray)
-            var counter: Int = 0
+            //var counter: Int = 0
             LazyColumn {
                 items(playlistNames) { playlist ->
-                    //Divider(color = Color.Gray)
                     PlaylistRow(
                         playlist = playlist,
                         database = database,
-                        counter = counter,
-                        numOfPlaylists = playlistNames.size,
                         onPlaylistRemoved = {
                             playlistNames.remove(playlist)
+
                         }
                     )
 
 
-                    counter++
                 }
             }
-
         }
     }
 }
@@ -101,8 +84,6 @@ fun PlaylistScreen(
 fun PlaylistRow(
     playlist: String,
     database: SharedPreferences,
-    counter: Int,
-    numOfPlaylists: Int,
     onPlaylistRemoved: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -145,20 +126,7 @@ fun PlaylistRow(
                 }
         )
 
-        //Row(verticalAlignment = Alignment.CenterVertically) {
-        //Row() {
-        //Button(onClick = { expanded = true }) { Text("Apps") }
-
-
-        //Spacer(modifier = Modifier.width(100.dp))
-
 
     }
     Divider(color = Color.Gray)
-
-    // }
-    if (counter == numOfPlaylists - 1) {
-        Spacer(modifier = Modifier.height(100.dp))
-    }
-    //Spacer(modifier = Modifier.height(50.dp))
 }

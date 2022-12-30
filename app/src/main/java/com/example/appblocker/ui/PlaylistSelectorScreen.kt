@@ -11,6 +11,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,7 +28,7 @@ fun PlaylistSelectorScreen(
     val packageManager = context.packageManager
     val database = context.getSharedPreferences("app_playlists", Context.MODE_PRIVATE)
     // current set playlist name in TextField
-    var playlistName: String by remember { mutableStateOf("Name of Playlist") }
+    var playlistName: String by remember { mutableStateOf("") }
     // currently checked apps
     val checkedApps = remember { mutableStateListOf<String>() }
 
@@ -55,6 +56,7 @@ fun PlaylistSelectorScreen(
                     onValueChange = {
                         playlistName = it
                     },
+                    label = { Text(text = "Name of Playlist", color = Color.White) },
                     singleLine = true,
                     modifier = Modifier.widthIn(0.dp, 350.dp)
                 )
@@ -72,6 +74,7 @@ fun PlaylistSelectorScreen(
                             apply()
                         }
                         navController.navigate("PlaylistScreen")
+
                     }
                 ) {
                     Text("Save")
