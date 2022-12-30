@@ -11,7 +11,9 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -91,6 +93,10 @@ fun ScheduleScreen(
                 text = { Text("Save") },
                 onClick = {
                     if (weekData != null) {
+                        val database = context.getSharedPreferences("app_playlists", Context.MODE_PRIVATE)
+                        for (day in weekData) {
+                            day.appsInPlaylist = database.getStringSet(day.playlistName, mutableSetOf())?.toList() as List<String>
+                        }
                         saveDaysToPreferences(context, weekData)
                         Toast.makeText(context, "Preferences Saved", Toast.LENGTH_SHORT).show()
                     }
@@ -113,12 +119,14 @@ fun ScheduleScreen(
             Spacer(modifier = modifier.height(15.dp))
             Divider(color = Color.Gray)
             Spacer(modifier = modifier.height(10.dp))
-            LazyColumn {
-                // for state hoisting switch
+            //LazyColumn {
+            Column (modifier = Modifier
+                .verticalScroll(rememberScrollState())) {
 
                 if (weekData != null) {
 
-                    items(weekData.toList()) { day ->
+                    for (day in weekData.toList()) {
+                    //items(weekData.toList()) { day ->
                         // make each row
                         //ScheduleRow(day = day, playlistNames = playlistNames)
 
@@ -189,7 +197,7 @@ fun ScheduleScreen(
                                 }
                             }
 
-                            /*
+
                             if (day.isToday) {
                                 Divider(color = todayColor, modifier = Modifier
                                     .fillMaxHeight()
@@ -200,7 +208,7 @@ fun ScheduleScreen(
                                 Divider(color = Color.LightGray, modifier = Modifier
                                     .fillMaxHeight()
                                     .width(2.dp))
-                            }*/
+                            }
 
                             Spacer(modifier = modifier.width(11.dp))
 

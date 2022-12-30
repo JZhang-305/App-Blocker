@@ -1,23 +1,35 @@
 package com.example.appblocker.backend
 
+import android.content.Context
 import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalContext
 import java.util.*
 import java.time.DayOfWeek
 import kotlinx.serialization.Serializable
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 
 @Serializable
 class DayOfTheWeek(val dayOfWeek: String) {
     //var sleepTimeHour = 0
-    var sleepTime = "10:00"
-    var wakeTime = "00:00"
+    var sleepTime = "00:00"
+    var wakeTime = "00:01"
     var playlistName = ""
     var appsInPlaylist = listOf<String>()
     var isToday = (dayOfWeek == currentDay())
     var isSwitchedOn = false
     var currentlyBlocking = false
 
+    fun updateIsCurrentlyBlocking() {
+        updateIsToday()
 
+        val current = LocalDateTime.now()
+        val formatter = DateTimeFormatter.ofPattern("HH:mm")
+        val formatted = current.format(formatter)
+
+        currentlyBlocking = (isSwitchedOn && isToday && isInBetween(sleepTime, wakeTime, formatted) && sleepTime != wakeTime)
+        }
 
     private fun currentDay(): String {
         val calendar = Calendar.getInstance();
@@ -38,5 +50,27 @@ class DayOfTheWeek(val dayOfWeek: String) {
 
     fun updateIsToday() {
         isToday = (dayOfWeek == currentDay())
+    }
+
+    private fun isInBetween(
+        startTime: String,
+        endTime: String,
+        currentTime: String
+    ): Boolean {
+        val startMinutesSinceMidnight = calculateMinutesSinceMidnight(startTime)
+        val endMinutesSinceMidnight = calculateMinutesSinceMidnight(endTime)
+        val currentMinutesSinceMidnight = calculateMinutesSinceMidnight(currentTime)
+        if (startMinutesSinceMidnight < endMinutesSinceMidnight) {
+            return (currentMinutesSinceMidnight >= startMinutesSinceMidnight) && (currentMinutesSinceMidnight < endMinutesSinceMidnight)
+        } else {
+            return !((currentMinutesSinceMidnight >= endMinutesSinceMidnight) && (currentMinutesSinceMidnight < startMinutesSinceMidnight))
+        }
+    }
+
+    private fun calculateMinutesSinceMidnight(time_hh_mm: String): Int {
+        val timeStrArray = time_hh_mm.split(":")
+        var minutes = timeStrArray[1].toInt()
+        minutes += 60 * timeStrArray[0].toInt()
+        return minutes
     }
 }
