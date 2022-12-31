@@ -93,9 +93,10 @@ fun ScheduleScreen(
                         val database =
                             context.getSharedPreferences("app_blocklists", Context.MODE_PRIVATE)
                         for (day in weekData) {
-                            day.appsInBlocklist =
+                            day.updateAppsInBlocklist(context)
+                            /*day.appsInBlocklist =
                                 database.getStringSet(day.blocklistName, mutableSetOf())
-                                    ?.toList() as List<String>
+                                    ?.toList() as List<String>*/
                         }
                         saveDaysToPreferences(context, weekData)
                         Toast.makeText(context, "Preferences Saved", Toast.LENGTH_SHORT).show()

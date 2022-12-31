@@ -1,6 +1,8 @@
 package com.example.appblocker.backend
 
 import android.content.Context
+import android.content.pm.ApplicationInfo
+import android.content.pm.PackageManager
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import java.util.*
@@ -21,6 +23,34 @@ class DayOfTheWeek(val dayOfWeek: String) {
     var isSwitchedOn = false
     var currentlyBlocking = false
 
+
+    private fun generateAppToPackageMap(context: Context): Map<String, String> {
+        val packageManager = context.packageManager
+        val listOfApps = packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
+        val appsByName = mutableMapOf<String, String>()
+        for (app in listOfApps) {
+            if (app.flags and ApplicationInfo.FLAG_SYSTEM == 0) {
+                appsByName[app.loadLabel(packageManager).toString()] = app.packageName
+            }
+        }
+        return appsByName
+    }
+
+    fun updateAppsInBlocklist(context: Context) {
+        val database = context.getSharedPreferences("app_blocklists", Context.MODE_PRIVATE)
+
+        val originalBlocklistNames = database.getStringSet(blocklistName, null)?.toTypedArray()
+        val packageNameByAppName = generateAppToPackageMap(context)
+        var packageNames = mutableListOf<String>()
+
+        if (originalBlocklistNames != null) {
+            for (name in originalBlocklistNames) {
+                packageNameByAppName[name]?.let { packageNames.add(it) }
+            }
+        }
+        appsInBlocklist = packageNames
+    }
+
     fun updateIsCurrentlyBlocking() {
         updateIsToday()
         val current = LocalDateTime.now()
@@ -31,7 +61,7 @@ class DayOfTheWeek(val dayOfWeek: String) {
             sleepTime,
             wakeTime,
             formatted
-        ) && sleepTime != wakeTime)
+        ) && sleepTime != wakeTime && blocklistName != "")
     }
 
     private fun currentDay(): String {

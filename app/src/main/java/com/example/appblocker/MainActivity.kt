@@ -1,25 +1,25 @@
 package com.example.appblocker
 
-import com.example.appblocker.ui.BlocklistSelectorScreen
-import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.appblocker.Navigation
-import com.example.appblocker.ui.ScheduleScreen
-import com.example.appblocker.ui.HomeScreen
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import com.example.appblocker.backend.AppCheckingWorker
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
+        val workRequest = OneTimeWorkRequestBuilder<AppCheckingWorker>().build()
+        WorkManager.getInstance(applicationContext).enqueue(workRequest)
+
+
         setContent {
             Navigation(this)
         }
+
+
     }
 }
