@@ -1,21 +1,11 @@
 package com.example.appblocker.backend
 
-import android.Manifest
-import android.app.ActivityManager
 import android.app.admin.DevicePolicyManager
 import android.app.usage.UsageStats
 import android.app.usage.UsageStatsManager
 import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
-import android.provider.Settings
-import android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS
-import android.util.Log
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.runtime.Composable
-import androidx.core.content.ContextCompat.startActivity
+import com.example.appblocker.myDeviceAdminReceiver
 import java.util.*
 
 

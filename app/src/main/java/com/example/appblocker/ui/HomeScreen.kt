@@ -1,9 +1,6 @@
 package com.example.appblocker.ui
 
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
-import android.provider.Settings
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -21,7 +18,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
 import com.example.appblocker.backend.DayOfTheWeek
 import kotlinx.serialization.decodeFromString
@@ -114,57 +110,6 @@ fun HomeScreen(navController: NavHostController, context: Context, modifier: Mod
                 }
             }
         }
-        Spacer(modifier = modifier.height(30.dp))
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Button(
-                onClick = {
-                    UsageAccessSettingsPage(context)
-                          },
-                shape = RoundedCornerShape(20.dp),
-                modifier = Modifier
-                    .height(60.dp)
-                    .width(350.dp),
-                elevation = ButtonDefaults.elevation(
-                    defaultElevation = 10.dp,
-                    pressedElevation = 15.dp,
-                    disabledElevation = 0.dp
-                )
-            ) {
-                Text(
-                    "Get Perms",
-                    fontSize = 30.sp,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.align(Alignment.CenterVertically)
-                )
-            }
-        }
-
-        Spacer(modifier = modifier.height(30.dp))
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Button(
-                onClick = {
-                    showHome(context)
-                },
-                shape = RoundedCornerShape(20.dp),
-                modifier = Modifier
-                    .height(60.dp)
-                    .width(350.dp),
-                elevation = ButtonDefaults.elevation(
-                    defaultElevation = 10.dp,
-                    pressedElevation = 15.dp,
-                    disabledElevation = 0.dp
-                )
-            ) {
-                Text(
-                    "Go Home",
-                    fontSize = 30.sp,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.align(Alignment.CenterVertically)
-                )
-            }
-        }
-
-
         Spacer(modifier = Modifier.height(60.dp))
         Row(horizontalArrangement = Arrangement.Center) {
             Text(text = "Status: ", color = Color.Black, fontSize = 28.sp)
@@ -175,12 +120,6 @@ fun HomeScreen(navController: NavHostController, context: Context, modifier: Mod
                 Text(text = "Inactive", color = Color.Red, fontSize = 28.sp)
             }
         }
-
-//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.SET_APPLICATION_ENABLED_STATE) != PackageManager.PERMISSION_GRANTED) {
-//            // Permission is not granted, request it
-//            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.SET_APPLICATION_ENABLED_STATE), REQUEST_CODE_SET_APPLICATION_ENABLED_STATE)
-//        }
-
 
         //Button(onClick = {navController.navigate("BlocklistScreen")}) { Text("App Blocklist") }
         //Button(onClick = {}) { Text("Unlock") }
@@ -205,23 +144,4 @@ fun isBlocking(context: Context): Boolean? {
     } else {
         return false
     }
-}
-
-
-fun UsageAccessSettingsPage(context: Context) {
-    val intent = Intent()
-    intent.action = Settings.ACTION_USAGE_ACCESS_SETTINGS
-    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-    val uri: Uri = Uri.fromParts("package", context.packageName, null)
-    intent.data = uri
-    context.startActivity(intent)
-}
-
-
-fun showHome(context: Context): Boolean {
-    val startMain = Intent(Intent.ACTION_MAIN)
-    startMain.addCategory(Intent.CATEGORY_HOME)
-    startMain.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-    context.startActivity(startMain)
-    return true
 }
