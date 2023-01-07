@@ -7,7 +7,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.core.app.ActivityCompat.startActivityForResult
 
 
 class MainActivity : ComponentActivity() {
@@ -20,16 +19,28 @@ class MainActivity : ComponentActivity() {
         WorkManager.getInstance(applicationContext).enqueue(workRequest)
         */
 
-        var devicePolicyManager: DevicePolicyManager? = null
-        var deviceAdmin: ComponentName? = null
+        val REQUEST_CODE_ENABLE_ADMIN = 1
+        var devicePolicyManager: DevicePolicyManager? = getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
+        var deviceAdmin: ComponentName? = ComponentName(this, MyDeviceAdminReceiver::class.java)
+        // Launch the activity to have the user enable our admin.
 
+        if (devicePolicyManager!!.isAdminActive(deviceAdmin!!)) {
+        }
+        else {
+            val intent = Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN).apply {
+                putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, deviceAdmin)
+            }
+            startActivityForResult(intent, REQUEST_CODE_ENABLE_ADMIN)
 
 
         setContent {
             Navigation(this)
+
         }
 
 
+
+        }
     }
 }
 
@@ -41,15 +52,15 @@ private fun checkAndTakeUserToEnableAdminApp(context: Context) {
     } else {
         showDeviceAdminPopup(context = context, deviceAdmin = deviceAdmin)
     }
-
 }
 
 fun showDeviceAdminPopup(context: Context, deviceAdmin: ComponentName) {
     val REQUEST_CODE_ENABLE_ADMIN = 1;
     val intent = Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN)
     intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, deviceAdmin)
-    intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "EXPLANATION")
+    //intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "EXPLANATION")
 
     context.startActivity(intent)
 }
+
 

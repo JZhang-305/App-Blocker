@@ -5,11 +5,11 @@ import android.app.usage.UsageStats
 import android.app.usage.UsageStatsManager
 import android.content.ComponentName
 import android.content.Context
-import com.example.appblocker.myDeviceAdminReceiver
+import com.example.appblocker.MyDeviceAdminReceiver
 import java.util.*
 
 
-
+/*
 fun getForegroundApp(context: Context): String? {
     var currentApp = "NULL"
     val usm: UsageStatsManager = context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
@@ -36,7 +36,7 @@ fun Block(context: Context, appsToBlock: Array<String>) {
 
     val componentName = ComponentName(
         context,
-        myDeviceAdminReceiver::class.java
+        MyDeviceAdminReceiver::class.java
     )
     devicePolicyManager.setPackagesSuspended(componentName, appsToBlock, true)}
 
@@ -52,3 +52,4 @@ fun Block(context: Context, appsToBlock: Array<String>) {
 //    startHomescreen.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
 //    context.startActivity(startHomescreen)
 //}
+*/

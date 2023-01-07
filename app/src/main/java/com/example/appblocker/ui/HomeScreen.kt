@@ -1,7 +1,12 @@
 package com.example.appblocker.ui
 
+//import androidx.core.app.ActivityCompat.startActivityForResult
+import android.app.admin.DevicePolicyManager
+import android.content.ComponentName
 import android.content.Context
-import androidx.compose.foundation.border
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -22,11 +26,13 @@ import androidx.navigation.NavHostController
 import com.example.appblocker.backend.DayOfTheWeek
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-import java.time.LocalDate
 import java.util.*
 
 @Composable
 fun HomeScreen(navController: NavHostController, context: Context, modifier: Modifier = Modifier) {
+    var devicePolicyManager: DevicePolicyManager? = null
+    var deviceAdmin: ComponentName? = null
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
@@ -85,11 +91,88 @@ fun HomeScreen(navController: NavHostController, context: Context, modifier: Mod
                 )
             }
         }
+        Spacer(modifier = modifier.height(30.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Button(
+                onClick = {
+                    UsageAccessSettingsPage(context)
+                },
+                shape = RoundedCornerShape(20.dp),
+                modifier = Modifier
+                    .height(60.dp)
+                    .width(350.dp),
+                elevation = ButtonDefaults.elevation(
+                    defaultElevation = 10.dp,
+                    pressedElevation = 15.dp,
+                    disabledElevation = 0.dp
+                )
+            ) {
+                Text(
+                    "Get Perms",
+                    fontSize = 30.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.align(Alignment.CenterVertically)
+                )
+            }
+        }
+
+        Spacer(modifier = modifier.height(30.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Button(
+                onClick = {
+                    showHome(context)
+                },
+                shape = RoundedCornerShape(20.dp),
+                modifier = Modifier
+                    .height(60.dp)
+                    .width(350.dp),
+                elevation = ButtonDefaults.elevation(
+                    defaultElevation = 10.dp,
+                    pressedElevation = 15.dp,
+                    disabledElevation = 0.dp
+                )
+            ) {
+                Text(
+                    "Go Home",
+                    fontSize = 30.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.align(Alignment.CenterVertically)
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(30.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Button(
+                onClick = {
+
+                },
+                shape = RoundedCornerShape(20.dp),
+                modifier = Modifier
+                    .height(60.dp)
+                    .width(350.dp),
+                elevation = ButtonDefaults.elevation(
+                    defaultElevation = 10.dp,
+                    pressedElevation = 15.dp,
+                    disabledElevation = 0.dp
+                )
+            ) {
+                Text(
+                    "Manually Start Block",
+                    fontSize = 30.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.align(Alignment.CenterVertically)
+                )
+            }
+        }
+
         Spacer(modifier = Modifier.height(30.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
             isBlocking(context)?.let {
                 Button(
-                    onClick = {},
+                    onClick = {
+
+                    },
                     shape = RoundedCornerShape(20.dp),
                     modifier = Modifier
                         .height(60.dp)
@@ -102,7 +185,7 @@ fun HomeScreen(navController: NavHostController, context: Context, modifier: Mod
                     enabled = it
                 ) {
                     Text(
-                        "Unlock",
+                        "Unlock Block",
                         fontSize = 30.sp,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.align(Alignment.CenterVertically)
@@ -144,4 +227,22 @@ fun isBlocking(context: Context): Boolean? {
     } else {
         return false
     }
+}
+
+fun UsageAccessSettingsPage(context: Context) {
+    val intent = Intent()
+    intent.action = Settings.ACTION_USAGE_ACCESS_SETTINGS
+    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+    val uri: Uri = Uri.fromParts("package", context.packageName, null)
+    intent.data = uri
+    context.startActivity(intent)
+}
+
+
+fun showHome(context: Context): Boolean {
+    val startMain = Intent(Intent.ACTION_MAIN)
+    startMain.addCategory(Intent.CATEGORY_HOME)
+    startMain.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+    context.startActivity(startMain)
+    return true
 }

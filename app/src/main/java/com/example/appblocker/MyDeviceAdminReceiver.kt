@@ -1,12 +1,10 @@
-package com.example.appblocker;
+package com.example.appblocker
 
-import android.app.admin.DeviceAdminReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
-import android.widget.Toast;
-
-
+import android.app.admin.DeviceAdminReceiver
+import android.content.Context
+import android.content.Intent
+import android.util.Log
+import android.widget.Toast
 
 /**
  * This is the component that is responsible for actual device administration.
@@ -14,43 +12,43 @@ import android.widget.Toast;
  * subclass DeviceAdminReceiverClass class here and to implement its only required
  * method onEnabled().
  */
-public class MyDeviceAdminReceiver extends DeviceAdminReceiver {
-    static final String TAG = "DeviceAdminReceiverClass";
-
-    /** Called when this application is approved to be a device administrator. */
-    @Override
-    public void onEnabled(Context context, Intent intent) {
-        super.onEnabled(context, intent);
-        Toast.makeText(context, "Device admin is enabled",
-                Toast.LENGTH_LONG).show();
-        Log.d(TAG, "onEnabled");
+class MyDeviceAdminReceiver : DeviceAdminReceiver() {
+    /** Called when this application is approved to be a device administrator.  */
+    override fun onEnabled(context: Context, intent: Intent) {
+        super.onEnabled(context, intent)
+        Toast.makeText(
+            context, "Device admin is enabled",
+            Toast.LENGTH_LONG
+        ).show()
+        Log.d(TAG, "onEnabled")
     }
 
-    /** Called when this application is no longer the device administrator. */
-    @Override
-    public void onDisabled(Context context, Intent intent) {
-        super.onDisabled(context, intent);
-        Toast.makeText(context, "Device admin is disabled",
-                Toast.LENGTH_LONG).show();
-        Log.d(TAG, "onDisabled");
+    /** Called when this application is no longer the device administrator.  */
+    override fun onDisabled(context: Context, intent: Intent) {
+        super.onDisabled(context, intent)
+        Toast.makeText(
+            context, "Device admin is disabled",
+            Toast.LENGTH_LONG
+        ).show()
+        Log.d(TAG, "onDisabled")
     }
 
-    @Override
-    public void onPasswordChanged(Context context, Intent intent) {
-        super.onPasswordChanged(context, intent);
-        Log.d(TAG, "onPasswordChanged");
+    override fun onPasswordChanged(context: Context, intent: Intent) {
+        super.onPasswordChanged(context, intent)
+        Log.d(TAG, "onPasswordChanged")
     }
 
-    @Override
-    public void onPasswordFailed(Context context, Intent intent) {
-        super.onPasswordFailed(context, intent);
-        Log.d(TAG, "onPasswordFailed");
+    override fun onPasswordFailed(context: Context, intent: Intent) {
+        super.onPasswordFailed(context, intent)
+        Log.d(TAG, "onPasswordFailed")
     }
 
-    @Override
-    public void onPasswordSucceeded(Context context, Intent intent) {
-        super.onPasswordSucceeded(context, intent);
-        Log.d(TAG, "onPasswordSucceeded");
+    override fun onPasswordSucceeded(context: Context, intent: Intent) {
+        super.onPasswordSucceeded(context, intent)
+        Log.d(TAG, "onPasswordSucceeded")
     }
 
+    companion object {
+        const val TAG = "DeviceAdminReceiverClass"
+    }
 }
